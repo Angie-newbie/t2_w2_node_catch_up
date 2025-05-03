@@ -1,9 +1,13 @@
+import 'dotenv/config'
+
 import express from 'express' // ES6 modules
 import cors from 'cors'
 import helmet from 'helmet'
 import post_routes from './routes/post_routes.js'
 import auth_routes from './routes/auth_routes.js'
 import { connect } from './db.js'
+
+console.log(process.env)
 
 const app = express()
 const port = 3000
@@ -19,6 +23,13 @@ app.use(express.json())
 app.use(auth_routes)
 app.use(post_routes)
 
+
+// Error handler
+app.use((err,req, res, next) => {
+    // console.error(err.stack)
+    // console.log(err)
+    res.status(400).send({error: error.message})
+})
 
 // Start the dev server on the given port
 // The callback is called when the server is running

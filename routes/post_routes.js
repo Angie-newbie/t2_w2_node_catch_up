@@ -1,6 +1,8 @@
 // import express from 'express' // Import the default export
 import { Router } from 'express' // Destructures Router from within the default export
+import { auth } from '../auth.js'
 import Post from '../models/post.js'
+import Category from '../models/category.js'
 
 // Default visibility of all module contents is private
 
@@ -8,8 +10,19 @@ import Post from '../models/post.js'
 const router = Router()
 
 // Get all posts
-router.get('/posts', async (req, res) => {
-    res.send(await Post.find(req.query.draft ? {} : { isPublished: true }))
+router.get('/posts', auth, async (req, res) => {
+    res.send(
+        await Post
+            // find() argument is selective with a ternary
+            // If req.query.draft is truthy, pass an empty filter (i.e. {})
+            // else filter to include only published posts
+            .find(req.query.draft ? {} : { isPublished: true })
+            .populate({
+                path: 'category',
+                select: '-__v -_id'
+            })
+            .select('-__v')
+    )
 })
 
 // router.get('/posts/search', (req, res) => {})

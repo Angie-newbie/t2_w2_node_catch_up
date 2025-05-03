@@ -1,9 +1,9 @@
 import {model} from "mongoose"
-import { stringify } from "querystring"
+
 
 const User = model('User', {
     email:{
-        type: string,
+        type: String,
         required: true,
         unique: true,
         minLength: 3
@@ -12,6 +12,10 @@ const User = model('User', {
         type: String,
         required: true,
         minLength: 8
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
 
 })
